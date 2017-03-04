@@ -4,6 +4,7 @@ Tags = ["chromebook", "hardware", "review"]
 Description = ""
 date = "2013-03-04T14:24:26-05:00"
 title = "Reviewing the $250 Samsung Chromebook as a Developer"
+aliases = ["/reviewing-the-250-samsung-chromebook-as-a-developer"]
 
 +++
 
