@@ -12,7 +12,8 @@ body {
   margin: 30px 0; }
 
 .navbar .nav {
-  float: right; }
+    float: right;
+}
 
 figure.full img {
   width: 100%;
@@ -90,7 +91,7 @@ footer {
   padding-right: 10px;
   background-color: white;
   margin: auto;
-  max-width: 980px;
+  max-width: 800px;
   border-bottom: 1px solid #989898;
 }
 
@@ -231,7 +232,7 @@ p {
   text-decoration: none;
 }
 
-a:hover {
+.content a:hover {
   text-decoration: none;
   border-bottom: 3px solid #fa5305;
 }
@@ -303,4 +304,22 @@ p img {
     margin: auto;
     margin-top: 5%;
     margin-bottom: 5%;
+}
+
+.navbar h2 {
+    color: #444;
+    font-family: "Roboto Condensed", sans-serif;
+    display: inline-block;
+}
+
+.navbar .logo {
+    width: 32px;
+    height: 32px;
+    float: right;
+    margin-top: 16px;
+    margin-left: 3%;
+}
+
+.twitter {
+    margin-top: 3px;
 }
