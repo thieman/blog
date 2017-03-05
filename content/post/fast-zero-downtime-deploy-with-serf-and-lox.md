@@ -1,8 +1,8 @@
 +++
 date = "2014-07-20T16:24:15-05:00"
 title = "Fast, Zero-Downtime Deploy with Serf and Lox"
-Categories = ["aws", "serf", "deploy"]
-Tags = []
+Categories = []
+Tags = ["aws", "serf", "deploy"]
 Description = ""
 aliases = ["/fast-zero-downtime-deploy-with-serf-and-lox"]
 
