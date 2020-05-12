@@ -7,13 +7,13 @@ date = "2014-03-19T16:24:00-05:00"
 aliases = ["/github-selfies"]
 +++
 
-![](http://i.imgur.com/Ea1fAVS.png)
+![](https://i.imgur.com/Ea1fAVS.png)
 
 **[Get it now on the Chrome Web Store](https://chrome.google.com/webstore/detail/github-selfies/ldnpkdnkgkogfnahcnldaedcoadjbkbl)**
 
 **[Now available for Firefox, too!](https://addons.mozilla.org/en-US/firefox/addon/github-selfies/)**
 
-[GitHub Selfies](https://github.com/thieman/github-selfies) lets you add webcam [selfies](https://www.youtube.com/watch?v=kdemFfbS5H0) to pull requests and pull request comments on GitHub. That's it. Really. So now you can [be encouraging](http://i.imgur.com/nFKCOXy.png). Or [happy!](http://i.imgur.com/IannNci.png) Or show off your [Minecraft ocelot](http://i.imgur.com/1A1UzDs.png). Or your [favorite Pokémon](http://i.imgur.com/Lj6TXP3.png).
+[GitHub Selfies](https://github.com/thieman/github-selfies) lets you add webcam [selfies](https://www.youtube.com/watch?v=kdemFfbS5H0) to pull requests and pull request comments on GitHub. That's it. Really. So now you can [be encouraging](https://i.imgur.com/nFKCOXy.png). Or [happy!](https://i.imgur.com/IannNci.png) Or show off your [Minecraft ocelot](https://i.imgur.com/1A1UzDs.png). Or your [favorite Pokémon](https://i.imgur.com/Lj6TXP3.png).
 
 **Update**: Now you can put selfies in issues, too! The new version is up on the Chrome store as v1.1.
 

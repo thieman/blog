@@ -8,41 +8,41 @@ aliases = ["/fast-zero-downtime-deploy-with-serf-and-lox"]
 
 +++
 
-![](http://i.imgur.com/0UgPwSv.png)
+![](https://i.imgur.com/0UgPwSv.png)
 
-I recently had the opportunity to revamp our deploy pipeline at [GameChanger](http://gc.com), my wonderful employer. The result is a system that is robust, doesn't drop a single request during a deploy, and takes the same amount of time whether we're running ten instances or a thousand.
+I recently had the opportunity to revamp our deploy pipeline at [GameChanger](https://gc.com), my wonderful employer. The result is a system that is robust, doesn't drop a single request during a deploy, and takes the same amount of time whether we're running ten instances or a thousand.
 
-We achieved this using [Serf](http://serfdom.io), which provides a decentralized way to monitor cluster membership and trigger deploy events, and [Lox](http://gamechanger.github.io/lox), a simple Redis-backed service that helps us manage distributed locks across our cluster.
+We achieved this using [Serf](https://serfdom.io), which provides a decentralized way to monitor cluster membership and trigger deploy events, and [Lox](https://gamechanger.github.io/lox), a simple Redis-backed service that helps us manage distributed locks across our cluster.
 
 ## Serf: Non-awful deploy triggering
 
 The tests are passing and it's time to deploy a new version of your application. You've got a git tag all dressed up and ready to go, but now you need to somehow tell your production boxes to go get the new code. How do you do it? We've got a few obvious options that we as developers use every day to send messages to remote machines:
 
-1. SSH to all the servers <img src="http://i.imgur.com/EJMcYTL.png" alt="" title="" style="display: inline-block;">
-1. Send HTTP requests to services running on all the servers! <img src="http://i.imgur.com/EJMcYTL.png" alt="" title="" style="display: inline-block;"><img src="http://i.imgur.com/EJMcYTL.png" alt="" title="" style="display: inline-block;">
-1. Do anything else that requires you to connect to **ALL THE SERVERS!** <img src="http://i.imgur.com/EJMcYTL.png" alt="" title="" style="display: inline-block;"><img src="http://i.imgur.com/EJMcYTL.png" alt="" title="" style="display: inline-block;"><img src="http://i.imgur.com/EJMcYTL.png" alt="" title="" style="display: inline-block;">
+1. SSH to all the servers <img src="https://i.imgur.com/EJMcYTL.png" alt="" title="" style="display: inline-block;">
+1. Send HTTP requests to services running on all the servers! <img src="https://i.imgur.com/EJMcYTL.png" alt="" title="" style="display: inline-block;"><img src="https://i.imgur.com/EJMcYTL.png" alt="" title="" style="display: inline-block;">
+1. Do anything else that requires you to connect to **ALL THE SERVERS!** <img src="https://i.imgur.com/EJMcYTL.png" alt="" title="" style="display: inline-block;"><img src="https://i.imgur.com/EJMcYTL.png" alt="" title="" style="display: inline-block;"><img src="https://i.imgur.com/EJMcYTL.png" alt="" title="" style="display: inline-block;">
 
 These are not great solutions. SSH is slow so it doesn't scale very well. The second idea requires you to roll your own specialized deploy service. All three of these can easily be interrupted halfway through your deploy or fail on a subset of your servers due to network partitions, Time Warner internet, or a kaiju attack in northern Virginia.
 
-Enter [Serf](http://serfdom.io). We run Serf as a service on all our instances and use it to quickly, securely, and robustly propagate deploy messages through our entire cluster. You should read the documentation to get a full idea of what Serf can do for you, but for our purposes we get the following functionality:
+Enter [Serf](https://serfdom.io). We run Serf as a service on all our instances and use it to quickly, securely, and robustly propagate deploy messages through our entire cluster. You should read the documentation to get a full idea of what Serf can do for you, but for our purposes we get the following functionality:
 
-* [Fast](http://www.serfdom.io/docs/internals/simulator.html) and partition-tolerant propagation of messages through our cluster via a [gossip protocol](http://www.serfdom.io/docs/internals/gossip.html)
-* [Event handlers](http://www.serfdom.io/docs/agent/event-handlers.html) that run scripts in response to certain [events](http://www.serfdom.io/docs/commands/event.html) (in our case, we run a deploy script when we receive a deploy message)
-* Insights into [cluster membership](http://www.serfdom.io/docs/commands/members.html). Every box knows about all the other boxes in the cluster and their roles
+* [Fast](https://www.serfdom.io/docs/internals/simulator.html) and partition-tolerant propagation of messages through our cluster via a [gossip protocol](https://www.serfdom.io/docs/internals/gossip.html)
+* [Event handlers](https://www.serfdom.io/docs/agent/event-handlers.html) that run scripts in response to certain [events](https://www.serfdom.io/docs/commands/event.html) (in our case, we run a deploy script when we receive a deploy message)
+* Insights into [cluster membership](https://www.serfdom.io/docs/commands/members.html). Every box knows about all the other boxes in the cluster and their roles
 
 Here's a somewhat simplified look at how Serf's message propogation works and how we can send a message from one server and have that message eventually reach other servers that our originator doesn't know about.
 
-![](http://i.imgur.com/SkKJvJp.png)
+![](https://i.imgur.com/SkKJvJp.png)
 
-With Serf in the picture, it's now fast and easy for us to send a message to all of our servers. We simply SSH into a single box running in the cluster and send a Serf message from that box. [Within seconds](http://www.serfdom.io/docs/internals/simulator.html), every instance running in the cluster will start their deploy. We'll use the cluster membership functionality too in just a bit.
+With Serf in the picture, it's now fast and easy for us to send a message to all of our servers. We simply SSH into a single box running in the cluster and send a Serf message from that box. [Within seconds](https://www.serfdom.io/docs/internals/simulator.html), every instance running in the cluster will start their deploy. We'll use the cluster membership functionality too in just a bit.
 
 ## Coordinated Deploys with Lox
 
 You may have caught a slight problem in that last paragraph: all the servers will start their deploy at the same time. This will probably take down your website. What we would really like is for our servers to take turns so that we never have a full service interruption. We also want the deploy to remain fast. If we only have 2 instances online, only 1 should deploy at a time. If we have 1000 instances, we can have 500 deploy at a time and deploy just as quickly as when we were only running 2 instances, giving us a consistent deploy time.
 
-<img src="http://gamechanger.github.io/lox/images/logo.png" alt="" style="width: 150px;">
+<img src="https://gamechanger.github.io/lox/images/logo.png" alt="" style="width: 150px;">
 
-We built [Lox](http://gamechanger.github.io/lox) to help us do this. Lox gives us a way to manage a distributed deploy lock across multiple servers. Lox gives our servers a way to take turns during a deploy, and it also uses client-driven concurrent lock constraints to allow each group of servers to determine the speed at which they deploy. These constraints can also change in the middle of a deploy, so deploy stays fast even if you scale up in the middle of one.
+We built [Lox](https://gamechanger.github.io/lox) to help us do this. Lox gives us a way to manage a distributed deploy lock across multiple servers. Lox gives our servers a way to take turns during a deploy, and it also uses client-driven concurrent lock constraints to allow each group of servers to determine the speed at which they deploy. These constraints can also change in the middle of a deploy, so deploy stays fast even if you scale up in the middle of one.
 
 Let's run through a simple example where we have two "web" boxes running in our production environment. These both receive a deploy message from Serf at the same time and start their deploy process. This begins with a `POST` request to Lox that looks like this:
 
@@ -81,7 +81,7 @@ Using Lox and the cluster membership information provided from Serf, our servers
 
 ## Go Forth and Deploy Code
 
-That's it! You can layer [Serf](http://serfdom.io) and [Lox](http://gamechanger.github.io/lox) on top of your existing deploy infrastructure to facilitate a consistently fast deploy that doesn't sacrifice availability. To recap:
+That's it! You can layer [Serf](https://serfdom.io) and [Lox](https://gamechanger.github.io/lox) on top of your existing deploy infrastructure to facilitate a consistently fast deploy that doesn't sacrifice availability. To recap:
 
 * Serf provides a decentralized way to trigger deploy events and know which servers you have live in your cluster at any given time
 * Lox lets your servers take turns deploying in a consistently fast way that scales with your cluster size, even if it changes in the middle of a deploy

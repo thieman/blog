@@ -8,7 +8,7 @@ aliases = ["/write-you-a-starcraft-ai-in-clojure"]
 
 +++
 
-![Imgur](http://i.imgur.com/30gTwDW.png)
+![Imgur](https://i.imgur.com/30gTwDW.png)
 
 <a href="https://github.com/thieman/korhal">Korhal</a> is a StarCraft: Brood War Terran AI written entirely in Clojure. Current capabilities include unit-level micro routines like marine kiting and worker mineral walking, rote build order execution (9 depot, 11 barracks, etc), and a strategy engine to keep track of what the AI knows about its opponent. It probably won't beat anyone in a game right now, but it knows some neat tricks.
 
@@ -60,9 +60,9 @@ Korhal bundles a port of <a href="https://code.google.com/p/jnibwapi/">JNIBWAPI<
 The API is created mostly by running <a href="https://github.com/thieman/korhal/blob/master/src/korhal/interop/interop.clj#L46">a series of function-generating macros</a> on <a href="https://github.com/thieman/korhal/blob/master/src/korhal/interop/interop_types.clj">giant lists of Clojure names and Java types</a>. More complex functions are defined in <code>interop.clj</code> and then imported through the rest of the project. This approach minimizes the amount of boilerplate code you have to write but is quite hacky. The result is two giant files that contain all of the Clojure API functions. I would gladly entertain alternative approaches to porting a large Java API without imposing types on the Clojure end-user, since this is very much a quick-and-dirty approach.
 
 ## Concurrent AI Design
-Clojure makes <a href="http://clojure.org/concurrent_programming">concurrent programming</a> very simple using its included reference types. Korhal maintains an instance of JNIBWAPI in one thread that is responsible for all communication between Brood War and the AI. All of the actual AI logic is encapsulated in various engines (macro, micro, and strategy) that run in their own threads. These engines communicate information between themselves and the main thread in a thread-safe way using reference types.
+Clojure makes <a href="https://clojure.org/concurrent_programming">concurrent programming</a> very simple using its included reference types. Korhal maintains an instance of JNIBWAPI in one thread that is responsible for all communication between Brood War and the AI. All of the actual AI logic is encapsulated in various engines (macro, micro, and strategy) that run in their own threads. These engines communicate information between themselves and the main thread in a thread-safe way using reference types.
 
-When an engine wants to execute a command in the game, it inserts a <a href="http://en.wikipedia.org/wiki/Thunk_(functional_programming)">thunk</a> into an execution queue maintained in an atom, a Clojure reference type that manages shared, synchronous state. This is done by wrapping your command using the <code>with-api</code> macro. On each <code>gameUpdate</code> iteration, the main thread executes whatever thunks are in that queue.
+When an engine wants to execute a command in the game, it inserts a <a href="https://en.wikipedia.org/wiki/Thunk_(functional_programming)">thunk</a> into an execution queue maintained in an atom, a Clojure reference type that manages shared, synchronous state. This is done by wrapping your command using the <code>with-api</code> macro. On each <code>gameUpdate</code> iteration, the main thread executes whatever thunks are in that queue.
 
 Here's some code that the micro engine uses to stim marines. On each iteration of the engine, it runs combat functions on every unit currently fighting. It can call <code>micro-combat-stim</code> on a marine, and if the marine should stim now, it queues a closure to stim the marine during the next <code>gameUpdate</code> loop.
 
@@ -88,7 +88,7 @@ You can see the various queue options used by Korhal in <a href="https://github.
 
 Those are the basics. If you'd like to write your own AI or contribute to making Korhal better, <a href="https://github.com/thieman/korhal">head over to GitHub and fork it</a>. This is by far the most fun project I've worked on and I'd love to see what other work comes out of it, so <a href="https://twitter.com/thieman">get at me on Twitter</a> if you've got any questions or want to share cool new stuff.
 
-This project would not be possible without <a href="https://code.google.com/p/bwapi/">BWAPI</a> and <a href="https://code.google.com/p/jnibwapi/">JNIBWAPI</a>. Special thanks to everyone at <a href="https://www.hackerschool.com/">Hacker School</a>, particularly <a href="https://github.com/zachallaun">Zach Allaun</a>, <a href="http://webyrd.net/">Will Byrd</a>, and <a href="https://github.com/Apophenia">Lyndsey M</a>.
+This project would not be possible without <a href="https://code.google.com/p/bwapi/">BWAPI</a> and <a href="https://code.google.com/p/jnibwapi/">JNIBWAPI</a>. Special thanks to everyone at <a href="https://www.hackerschool.com/">Hacker School</a>, particularly <a href="https://github.com/zachallaun">Zach Allaun</a>, <a href="https://webyrd.net/">Will Byrd</a>, and <a href="https://github.com/Apophenia">Lyndsey M</a>.
 
 <iframe width="420" height="315" src="//www.youtube.com/embed/dLX-cETVdyM" frameborder="0" allowfullscreen></iframe>
 

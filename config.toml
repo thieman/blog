@@ -1,5 +1,5 @@
 title = "Travis Thieman"
-baseURL = "http://blog.travisthieman.com/"
+baseURL = "https://blog.travisthieman.com/"
 languageCode = "en-us"
 theme = "simple-a"
 canonifyURLs = true
